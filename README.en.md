@@ -236,3 +236,9 @@ diagnostic.
 
 Also: all 75 pairs compile individually, and `javac -Xlint:all --release 17`
 reports no warnings.
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE).
