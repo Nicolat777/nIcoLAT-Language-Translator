@@ -8,13 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * 静态检查：词典/名称解析 → 变量绑定 → 参数签名与类型 → literal 值域（规范 5.3 的检查顺序）。
- *
- * <p>这里刻意不做求值。规范 5.4 / 5.6 明确：类型正确不等于陈述为真；
- * iota 匹配 0 个或多个对象属于「求值未定义」，不能冒充静态类型错误。
- * 所以求值器（下一阶段）才负责 IOTA_EMPTY / IOTA_MULTIPLE / UNDECIDABLE。</p>
- */
 public final class Analyzer {
 
     private final Lexicon lex;
@@ -45,8 +38,6 @@ public final class Analyzer {
         }
     }
 
-    // ------------------------------------------------------------------ 公式
-
     private void checkFormula(Ast.Formula f) {
         if (f instanceof Ast.Bin b) {
             checkFormula(b.left);
@@ -74,7 +65,6 @@ public final class Analyzer {
                         "命题名 " + p.name + " 尚未定义（必须先定义后使用，不允许递归或前向引用）");
             }
         } else if (f instanceof Ast.TrueLit || f instanceof Ast.FalseLit) {
-            // 恒真 / 恒假
         } else if (f instanceof Ast.TimeScope ts) {
             NType want = "hh".equals(ts.op) || "hl".equals(ts.op) ? NType.E : NType.D;
             requireType(ts.arg, want, "时间作用域 " + ts.op);
@@ -212,9 +202,6 @@ public final class Analyzer {
         }
     }
 
-    // ------------------------------------------------------------------ 词项
-
-    /** @return 词项类型；出错时返回 null（已记录诊断） */
     private NType checkTerm(Ast.Term t) {
         if (t instanceof Ast.WordTerm w) {
             return wordTermType(w);
@@ -310,8 +297,6 @@ public final class Analyzer {
         }
         return e.type;
     }
-
-    // ------------------------------------------------------------------ 工具
 
     private void requireType(Ast.Term t, NType want, String where) {
         NType actual = checkTerm(t);

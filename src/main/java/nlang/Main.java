@@ -7,16 +7,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 命令行入口。只有三个功能：
- *
- * <pre>
- * nlang demo             测试程序：输出例句与反例，并统计通过数
- * nlang trans &lt;file.n&gt;   把 N 语言翻译成中文（- 表示从标准输入读）
- * nlang code &lt;编码&gt;       编码 → 词形，找不到输出 null
- * nlang word &lt;词形&gt;       词形 → 编码，找不到输出 null
- * </pre>
- */
 public final class Main {
 
     public static void main(String[] args) {
@@ -57,8 +47,6 @@ public final class Main {
         }
     }
 
-    // ------------------------------------------------------------------ 翻译
-
     private static void translate(String[] args) {
         String src;
         try {
@@ -94,7 +82,6 @@ public final class Main {
         }
     }
 
-    /** 一次完整的前端流水线：词法 → 语法 → 静态检查。 */
     public static final class Result {
         public final Lexicon lexicon;
         public final Ast.Program program;
@@ -132,8 +119,6 @@ public final class Main {
         return new Result(lex, program, diags);
     }
 
-    // ------------------------------------------------------------------ 工具
-
     private static String firstArg(String[] args) {
         return args.length >= 2 ? args[1] : null;
     }
@@ -142,7 +127,6 @@ public final class Main {
         return s == null ? "null" : s;
     }
 
-    /** 工作目录常常不是项目根，向上找 examples/ 里的同名文件。 */
     private static Path resolve(String arg) {
         Path direct = Path.of(arg);
         if (Files.isRegularFile(direct)) {
@@ -159,7 +143,6 @@ public final class Main {
         return null;
     }
 
-    /** 把诊断拼成可打印的文本（交互界面和命令行共用）。 */
     public static String formatDiags(String src, List<Diagnostic> diags) {
         StringBuilder sb = new StringBuilder();
         for (Diagnostic d : diags) {
@@ -177,7 +160,6 @@ public final class Main {
         return sb.toString();
     }
 
-    /** 可直接打印的翻译结果：成功给中文，失败给诊断。 */
     public static String translateOrReport(String src) {
         Result r = compile(src);
         if (r.hasError()) {

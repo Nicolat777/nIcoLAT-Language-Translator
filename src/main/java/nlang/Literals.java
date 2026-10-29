@@ -7,24 +7,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 字面量的词法校验与数值规范化。
- *
- * <p>规范 4.3 / 4.4：</p>
- * <ul>
- *   <li>N 是精确有理数域，0.5、1/2、2/4 是同一个值，规范表示是既约分数</li>
- *   <li>日期/时刻/URL 各有独立的合法性检查，URL 不触发网络访问</li>
- *   <li>字符串只允许六种转义：引号、反斜杠、n、r、t，以及 backslash-u 加四位十六进制</li>
- * </ul>
- */
 public final class Literals {
 
     private Literals() {
     }
 
-    // ---------------------------------------------------------------- 数值
-
-    /** 精确有理数，恒为既约形式，分母为正。 */
     public record Num(BigInteger n, BigInteger d) implements Comparable<Num> {
 
         public static Num of(long v) {
@@ -46,7 +33,6 @@ public final class Literals {
             return new Num(n.divide(g), d.divide(g));
         }
 
-        /** 只接受 "i"、"i.dddd"、"i/d" 三种形状（不含符号处理）。 */
         public static Num parse(String s) {
             boolean neg = s.startsWith("-");
             String body = neg ? s.substring(1) : s;
@@ -91,8 +77,6 @@ public final class Literals {
         }
     }
 
-    // ---------------------------------------------------------------- 日期 / 时刻
-
     private static final Pattern TIME = Pattern.compile(
             "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(Z|[+-]\\d{2}:\\d{2})");
 
@@ -109,11 +93,10 @@ public final class Literals {
         try {
             return java.time.LocalDate.of(y, m, d).getDayOfMonth() == d;
         } catch (java.time.DateTimeException e) {
-            return false; // 2 月 30 日、非闰年 2 月 29 日等
+            return false;
         }
     }
 
-    /** 返回 UTC 瞬间；不合法返回 null。 */
     public static OffsetDateTime parseTime(String s) {
         Matcher m = TIME.matcher(s);
         if (!m.matches()) {
@@ -142,7 +125,7 @@ public final class Literals {
                 return null;
             }
             if (oh == 14 && om != 0) {
-                return null; // 最大 ±14:00
+                return null;
             }
             int total = oh * 3600 + om * 60;
             if (off.charAt(0) == '-') {
@@ -158,8 +141,6 @@ public final class Literals {
         OffsetDateTime b = parseTime(end);
         return a != null && b != null && a.isBefore(b);
     }
-
-    // ---------------------------------------------------------------- URL
 
     public static boolean validUrl(String s) {
         String lower = s.toLowerCase();
@@ -188,22 +169,13 @@ public final class Literals {
                 end = k;
             }
         }
-        return end > 0; // 主机非空
+        return end > 0;
     }
 
     private static boolean isHex(char c) {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
-    // ---------------------------------------------------------------- 字符串
-
-    /**
-     * 解码双引号之间的内容（不含引号）。
-     *
-     * @param raw     原始切片
-     * @param errors  出错时追加说明
-     * @return 解码结果；出错返回 null
-     */
     public static String decode(String raw, List<String> errors) {
         StringBuilder sb = new StringBuilder();
         int i = 0;

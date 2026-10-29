@@ -6,15 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * 例句库：75 组「中文 ⇄ N 语言」对照。
- *
- * <p>这是演示用的句子库，不是翻译引擎：中文侧做的是**归一化后的整句匹配**
- * （去空白、去句末标点、引号统一、忽略大小写），所以换个说法就查不到。
- * 真正的「中文 → N 语言」需要另一套语法分析，不在这里做。</p>
- *
- * <p>N 语言侧每一条都通过编译器的静态检查，可直接 `trans` 出中文。</p>
- */
 public final class SentenceBank {
 
     public record Pair(int no, String zh, String n) {
@@ -92,7 +83,6 @@ public final class SentenceBank {
         add(list, "那条消息表达的命题是“那只狗在睡觉”。",
                 "tuku(gz m piko, gf bb(dape(kt m paku))).");
 
-        // ── 第二批：集合关系、事件与时间、测量、信息对象 ──
         add(list, "那只狗不是猫。", "m paku ∉ n bape.");
         add(list, "所有狗都是动物，但并非所有动物都是狗。", "n bapa ⊂ n vapa.");
         add(list, "所有车辆都是工具。", "n vapu ⊆ n vapo.");
@@ -140,17 +130,14 @@ public final class SentenceBank {
         return ALL;
     }
 
-    /** 中文 → N 语言；没有对应例句返回 null。 */
     public static String zhToN(String zh) {
         return ZH_TO_N.get(norm(zh));
     }
 
-    /** N 语言 → 中文；这条 N 句子不在例句库里返回 null。 */
     public static String nToZh(String n) {
         return N_TO_ZH.get(norm(n));
     }
 
-    /** 找不到时的近似提示：返回一句"最像"的中文例句。 */
     public static Pair closest(String zh) {
         String t = norm(zh);
         if (t.length() < 2) {
@@ -165,7 +152,6 @@ public final class SentenceBank {
         return null;
     }
 
-    /** 归一化：去空白、去句末标点、统一引号、忽略大小写。 */
     public static String norm(String s) {
         String t = s.strip()
                 .replace('“', '"').replace('”', '"')

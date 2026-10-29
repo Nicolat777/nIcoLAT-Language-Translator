@@ -8,12 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 
-/**
- * 交互模式：启动后一直读你输入的指令，中文或英文都认。
- *
- * <p>核心是例句库的双向互查：输中文出 N 语言，输 N 语言出中文。
- * 此外还能查编码、逐行翻译任意 N 语言句子。</p>
- */
 public final class Repl {
 
     private static String banner() {
@@ -59,7 +53,6 @@ public final class Repl {
         System.out.println("再见！");
     }
 
-    /** @return true 表示要退出 */
     private static boolean handle(String raw, BufferedReader in) throws IOException {
         if (raw.isEmpty()) {
             return false;
@@ -99,13 +92,11 @@ public final class Repl {
                 break;
         }
 
-        // 翻译 <文件>
         if (low.startsWith("翻译 ") || low.startsWith("translate ") || low.startsWith("trans ")) {
             translateFile(raw.substring(raw.indexOf(' ') + 1).strip());
             return false;
         }
 
-        // ① 中文 → N 语言（例句库）
         if (hasChinese(raw)) {
             String n = SentenceBank.zhToN(raw);
             if (n != null) {
@@ -114,14 +105,12 @@ public final class Repl {
             }
         }
 
-        // ② N 语言 → 中文（例句库）
         String zh = SentenceBank.nToZh(raw);
         if (zh != null) {
             System.out.println(zh);
             return false;
         }
 
-        // ③ 数字 ⇄ 单词
         String word = Lexicon.codeToWord(raw);
         if (word != null) {
             System.out.println(word);
@@ -133,14 +122,12 @@ public final class Repl {
             return false;
         }
 
-        // ④ 例句库之外的 N 语言句子，交给编译器解析
         if (looksLikeN(raw)) {
             String out = Main.translateOrReport(readStatement(raw, in));
             System.out.println(out.isEmpty() ? "（没有可翻译的内容）" : out);
             return false;
         }
 
-        // ⑤ 中文，但例句库里没有
         if (hasChinese(raw)) {
             SentenceBank.Pair near = SentenceBank.closest(raw);
             System.out.println("例句库里没有这句（共 " + SentenceBank.all().size() + " 句，输 测试 可看全部）。");
@@ -156,10 +143,6 @@ public final class Repl {
         return false;
     }
 
-    /**
-     * 收集一条完整的语句：括号没闭合、或者还没写句点，就继续读下一行。
-     * 这样从别处整段粘贴进来也能一次翻完。
-     */
     private static String readStatement(String first, BufferedReader in) throws IOException {
         StringBuilder sb = new StringBuilder(first);
         int guard = 0;
@@ -183,7 +166,6 @@ public final class Repl {
         return sb.toString();
     }
 
-    /** 括号深度；字符串里的括号不算。 */
     private static int depthOf(String s) {
         int d = 0;
         boolean inStr = false;

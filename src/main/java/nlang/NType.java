@@ -1,10 +1,5 @@
 package nlang;
 
-/**
- * 类型层的类型。规范 5.1：
- * A B N D E K M U S L O 之间没有隐式子类型关系；H&lt;T&gt; 只与元素类型相同的集合兼容，
- * 且 H&lt;H&lt;A&gt;&gt; 与 H&lt;A&gt; 不同。
- */
 public final class NType {
 
     public static final NType A = new NType("A", null);
@@ -19,9 +14,7 @@ public final class NType {
     public static final NType L = new NType("L", null);
     public static final NType O = new NType("O", null);
 
-    /** 原子类型名；集合类型时为 null */
     public final String atom;
-    /** 集合元素类型；非集合类型时为 null */
     public final NType elem;
 
     private NType(String atom, NType elem) {
@@ -54,12 +47,10 @@ public final class NType {
         return elem != null;
     }
 
-    /** H&lt;B&gt; 及任何嵌套含 B 的集合在 V2 核心暂不开放（规范 5.1）。 */
     public boolean containsProposition() {
         return isSet() ? elem.containsProposition() : "B".equals(atom);
     }
 
-    /** 中文类型说明，仅用于报错与展示。 */
     public String zhName() {
         if (isSet()) {
             return "集合<" + elem + ">";

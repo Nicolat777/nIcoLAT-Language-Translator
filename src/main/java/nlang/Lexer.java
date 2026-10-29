@@ -4,16 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * 手写词法分析器。
- *
- * <p>为什么手写而不是 ANTLR：N 语言的记号集是「形状可分」的（含元音的才是词），
- * 而且要求「最长合法记号 + 完整消费输入」，报错要精确到规范 5.8 的十类诊断。
- * 手写 60 行就能做到，而且不受词法器生成器的歧义规则限制。</p>
- */
 public final class Lexer {
 
-    /** 纯辅音语法算子（规范 3.1、3.3、3.4）。与含元音的词形天然不冲突。 */
     private static final Set<String> KEYWORDS = Set.of(
             "n", "m", "s", "z", "bb",
             "h", "hh", "hl", "hv",
@@ -70,13 +62,10 @@ public final class Lexer {
         return out;
     }
 
-    // ------------------------------------------------------------------ 字母
-
     private void lowerWord(int start) {
         while (i < len && isLower(src.charAt(i))) {
             i++;
         }
-        // 变量可以带数字后缀（x0、x12），数字也属于这个记号
         if (i - start == 1 && "xyw".indexOf(src.charAt(start)) >= 0
                 && i < len && Character.isDigit(src.charAt(i))) {
             while (i < len && Character.isDigit(src.charAt(i))) {
@@ -129,7 +118,6 @@ public final class Lexer {
         return c >= 'a' && c <= 'z';
     }
 
-    /** (?:[pbtdkgfvszhmnl][aeiou])+ */
     private static boolean isWordForm(String w) {
         if (w.length() < 2 || w.length() % 2 != 0) {
             return false;
@@ -143,7 +131,6 @@ public final class Lexer {
         return true;
     }
 
-    /** [xyw](?:0|[1-9][0-9]*)? */
     private static boolean isVarForm(String w) {
         char c = w.charAt(0);
         if ("xyw".indexOf(c) < 0) {
@@ -158,8 +145,6 @@ public final class Lexer {
         }
         return rest.matches("[1-9][0-9]*");
     }
-
-    // ------------------------------------------------------------------ 数值
 
     private void number(int start) {
         StringBuilder raw = new StringBuilder();
@@ -209,7 +194,6 @@ public final class Lexer {
             }
             raw.append(src, fracStart, i);
         } else if (i < len && src.charAt(i) == '.') {
-            // 语句结束句点：不吞掉
             out.add(new Token(Token.K.NUMBER, raw.toString(), canon(raw.toString(), start), start));
             return;
         }
@@ -230,8 +214,6 @@ public final class Lexer {
         }
     }
 
-    // ------------------------------------------------------------------ 字符串
-
     private void string(int start) {
         QStr q = readQuoted();
         if (q != null) {
@@ -242,10 +224,9 @@ public final class Lexer {
     private record QStr(String raw, String value) {
     }
 
-    /** 当前位置是开引号；返回引号内的原文与解码值。 */
     private QStr readQuoted() {
         int open = i;
-        i++; // "
+        i++;
         StringBuilder raw = new StringBuilder();
         while (i < len) {
             char c = src.charAt(i);
@@ -276,10 +257,8 @@ public final class Lexer {
         return null;
     }
 
-    // ------------------------------------------------------------------ 字面量
-
     private void literal(int start) {
-        i++; // '!'
+        i++;
         if (i >= len) {
             err(Diagnostic.Cat.LITERAL, "LITERAL_PREFIX", start, "'!' 之后缺少字面量内容");
             return;
@@ -335,7 +314,7 @@ public final class Lexer {
                     recover(start);
                     return;
                 }
-                i++; // [
+                i++;
                 String a = timeLiteral(start);
                 if (a == null) {
                     return;
@@ -373,7 +352,6 @@ public final class Lexer {
         }
     }
 
-    /** 读取 !t"..."，返回原始时刻字符串。 */
     private String timeLiteral(int outerStart) {
         skipSpace();
         if (i + 1 >= len || src.charAt(i) != '!' || src.charAt(i + 1) != 't') {
@@ -412,7 +390,6 @@ public final class Lexer {
         }
     }
 
-    /** 出错后跳到下一个可能的安全点，避免死循环。 */
     private void recover(int start) {
         if (i <= start) {
             i = start + 1;
@@ -427,10 +404,7 @@ public final class Lexer {
         }
     }
 
-    // ------------------------------------------------------------------ 符号
-
     private boolean symbol(int start) {
-        // 长的先匹配
         if (src.startsWith(":=", i)) {
             i += 2;
             out.add(new Token(Token.K.SYMBOL, ":=", null, start));
@@ -442,7 +416,6 @@ public final class Lexer {
             return true;
         }
         if (src.startsWith("<=", i) || src.startsWith(">=", i)) {
-            // 规范使用 ≤ ≥；这里顺手接受键盘写法，统一归一为 Unicode
             String s = src.substring(i, i + 2);
             i += 2;
             out.add(new Token(Token.K.SYMBOL, "<=".equals(s) ? "≤" : "≥", null, start));
@@ -453,7 +426,7 @@ public final class Lexer {
         if ("¬∧∨→↔≡㲗=≠∈∉⊂⊆<≤>≥⊤⊥(){}:,.".indexOf(c) >= 0) {
             i++;
             if (c == '㲗' || c == '≡') {
-                one = "↔"; // 规范书 PDF 中该符号字形缺失，规则是「逻辑等价」
+                one = "↔";
             }
             out.add(new Token(Token.K.SYMBOL, one, null, start));
             return true;
@@ -466,13 +439,10 @@ public final class Lexer {
         return false;
     }
 
-    // ------------------------------------------------------------------ 诊断
-
     private void err(Diagnostic.Cat cat, String code, int pos, String msg) {
         diags.add(new Diagnostic(cat, code, pos, msg));
     }
 
-    /** 把字符下标换算成 1-based 行列号。 */
     public static int[] lineCol(String src, int pos) {
         int line = 1;
         int col = 1;

@@ -1,11 +1,5 @@
 package nlang;
 
-/**
- * 测试程序：跑一批内置例句，把 N 语言翻译成中文打印出来；
- * 再跑一批「应当被拒绝」的输入，确认类型系统挡住了它们。
- *
- * <p>这份列表同时也是回归测试：改动词法、文法或签名表后先看这里的通过数。</p>
- */
 public final class Demo {
 
     private static final String[] EXAMPLES = {
@@ -120,7 +114,6 @@ public final class Demo {
         return String.format("%3d. ", n);
     }
 
-    /** 多行句子压成一行，方便对照。 */
     private static String flat(String s) {
         return s.replace("\n", " ").replaceAll("\\s+", " ").trim();
     }

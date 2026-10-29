@@ -156,7 +156,7 @@ N语言/
     └── Token.java              tokens
 ```
 
-Roughly 3.5k lines of Java across 15 files.
+Roughly 3.2k lines of Java across 15 files.
 
 ---
 

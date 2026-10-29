@@ -1,17 +1,7 @@
 package nlang;
 
-/**
- * 括号平衡预检查。
- *
- * <p>递归下降一旦少个括号，报错会出现在很远的地方（"期待「)」，实际是「.」"），
- * 极难定位。所以在解析前先扫一遍：少了就直说缺几个、从哪行开始；
- * 多了就直说第几行第几列多了一个。</p>
- *
- * <p>字符串（含 !d"…" !t"…" !l"…"）里的括号不计数。</p>
- */
 public final class Brackets {
 
-    /** @return 有问题的诊断；平衡返回 null */
     public static Diagnostic check(String src) {
         int depth = 0;
         int line = 1;

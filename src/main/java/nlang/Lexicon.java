@@ -5,16 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 词典与名称表（规范 2.1 / 2.3 / 5.2）。
- *
- * <p>这里用代码内置一份「引导词典」，内容严格照抄规范书 2.3、3.1、5.2 三张表。
- * 真实产品应把它换成 JSON/YAML 资源，并带上 version、status、迁移记录；
- * 接口保持 {@link #byWord} / {@link #byCode} / {@link #names} 三者即可平滑替换。</p>
- *
- * <p>注意：词条种类（SET / PREDICATE / DIMENSION / UNIT / CONTEXT / NUMERAL）
- * 属于「词汇层」，与类型层 NType 是两套东西，不能互相解释（规范 5.1 最后一段）。</p>
- */
 public final class Lexicon {
 
     public enum Kind { SET, PREDICATE, DIMENSION, UNIT, CONTEXT, NUMERAL }
@@ -38,7 +28,6 @@ public final class Lexicon {
         public final Kind kind;
         public final NType type;
         public final List<Sig> sig;
-        /** 中文译写模板，{角色} 会被替换 */
         public final String gloss;
 
         Entry(String code, String word, String concept, Kind kind, NType type,
@@ -86,8 +75,6 @@ public final class Lexicon {
         return names.get(w);
     }
 
-    // ------------------------------------------------------------ 构造辅助
-
     private void set(String code, String word, String concept) {
         put(new Entry(code, word, concept, Kind.SET, NType.set(NType.A), null, concept));
     }
@@ -113,10 +100,7 @@ public final class Lexicon {
         return new Sig(role, t, false);
     }
 
-    // ------------------------------------------------------------ 引导数据
-
     private void bootstrapWords() {
-        // 2.3 集合词项 H<A>
         set("1000", "bapa", "狗");
         set("1001", "bape", "猫");
         set("1002", "bapi", "树");
@@ -133,17 +117,14 @@ public final class Lexicon {
         set("7003", "vapo", "工具");
         set("7004", "vapu", "车辆");
 
-        // 3.1 测量维度 M
         term("4002", "kapi", "硬度", Kind.DIMENSION, NType.M, "硬度");
         term("4003", "kapo", "透光率", Kind.DIMENSION, NType.M, "透光率");
         term("4203", "kipo", "体积", Kind.DIMENSION, NType.M, "体积");
 
-        // 3.1 上下文词项 D / E
         term("A000", "hapa", "参照时刻", Kind.CONTEXT, NType.D, "参照时刻 r");
         term("A001", "hape", "早于 r 的区间", Kind.CONTEXT, NType.E, "参照时刻 r 之前");
         term("A002", "hapi", "晚于 r 的区间", Kind.CONTEXT, NType.E, "参照时刻 r 之后");
 
-        // 3.1 单位 U
         term("A003", "hapo", "秒", Kind.UNIT, NType.U, "秒");
         term("A004", "hapu", "固定日长 86400 秒", Kind.UNIT, NType.U, "日");
         term("A040", "haka", "莫氏硬度标度", Kind.UNIT, NType.U, "莫氏硬度");
@@ -151,14 +132,12 @@ public final class Lexicon {
         term("A042", "haki", "升", Kind.UNIT, NType.U, "升");
         term("A043", "hako", "250mL 容量杯", Kind.UNIT, NType.U, "杯(250mL)");
 
-        // 3.1 数字读音条目（只用于读音与旧文本导入）
         term("8000", "sapa", "0", Kind.NUMERAL, NType.N, "0");
         term("8001", "sape", "1", Kind.NUMERAL, NType.N, "1");
         term("8002", "sapi", "2", Kind.NUMERAL, NType.N, "2");
         term("8003", "sapo", "3", Kind.NUMERAL, NType.N, "3");
         term("8004", "sapu", "1/2", Kind.NUMERAL, NType.N, "1/2");
 
-        // 2.3 / 5.2 谓词：全部返回 B
         pred("2000", "tapa", "行走", "{kp}行走", req("kp", NType.A), opt("kk", NType.K), opt("kf", NType.A));
         pred("2001", "tape", "奔跑", "{kp}奔跑", req("kp", NType.A), opt("kk", NType.K), opt("kf", NType.A));
         pred("2002", "tapi", "掉落", "{kt}掉落", req("kt", NType.A), opt("kk", NType.K), opt("kf", NType.A));
@@ -199,7 +178,6 @@ public final class Lexicon {
     }
 
     private void bootstrapNames() {
-        // 附录 A1 示例名称表：名称与概念词典分开保存
         name("paka", NType.A, "人物甲");
         name("piki", NType.A, "人物乙");
         name("puka", NType.A, "杯子个体");
@@ -218,7 +196,6 @@ public final class Lexicon {
         names.put(word, new Name(word, type, concept));
     }
 
-    /** 供 UI 使用：按种类列出词条。 */
     public List<Entry> entries(Kind kind) {
         List<Entry> out = new ArrayList<>();
         for (Entry e : byWord.values()) {
@@ -229,17 +206,10 @@ public final class Lexicon {
         return out;
     }
 
-    // ------------------------------------------------------------ 编码 ⇄ 词形
-
     private static final String CODE_CHARS = "0123456789ABCD";
     private static final String CONS = "pbtdkgfvszhmnl";
     private static final String VOW = "aeiou";
 
-    /**
-     * 编码 → 词形。规范 1.2：长度为正偶数，最短两位，可逆。
-     *
-     * <p>输入不合法时返回 {@code null}，不抛异常——调用方只需要判断 null。</p>
-     */
     public static String codeToWord(String code) {
         if (code == null) {
             return null;
@@ -260,7 +230,6 @@ public final class Lexicon {
         return sb.toString();
     }
 
-    /** 词形 → 编码；不是合法 CV 音节串时返回 {@code null}。 */
     public static String wordToCode(String word) {
         if (word == null) {
             return null;

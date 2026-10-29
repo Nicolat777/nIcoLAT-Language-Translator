@@ -3,23 +3,6 @@ package nlang;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 递归下降语法分析器，实现规范 4.2 的 BNF：
- *
- * <pre>
- * 程序   ::= ε | 语句 程序
- * 语句   ::= 定义 | 公式 "."
- * 定义   ::= 命题名 ":=" 公式 "."
- * 公式   ::= 蕴含
- * 蕴含   ::= 析取 (("→" | "↔") 析取)*
- * 析取   ::= 合取 ("∨" 合取)*
- * 合取   ::= 否定 ("∧" 否定)*
- * 否定   ::= "¬" 否定 | 原子
- * </pre>
- *
- * <p>递归下降的好处：优先级直接体现在函数层次里，报错可以精确到「这里期待什么」，
- * 而且后面加语法糖（比如中文关键词）只要改几个分支，不需要重新生成语法表。</p>
- */
 public final class Parser {
 
     private final List<Token> toks;
@@ -31,7 +14,6 @@ public final class Parser {
         this.diags = diags;
     }
 
-    /** 语法错误时抛出，用于跳过当前语句继续分析。 */
     private static final class Bail extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
@@ -66,12 +48,10 @@ public final class Parser {
         }
     }
 
-    // ------------------------------------------------------------------ 语句
-
     private Ast.Stmt parseStatement() {
         if (peek().is(Token.K.PROPNAME) && peek(1).is(":=")) {
             Token n = next();
-            next(); // :=
+            next();
             Ast.Formula body = parseFormula();
             expect(".");
             return new Ast.Def(n.text, body, n.pos);
@@ -80,8 +60,6 @@ public final class Parser {
         expect(".");
         return new Ast.Assert(f, f.pos);
     }
-
-    // ------------------------------------------------------------------ 公式
 
     private Ast.Formula parseFormula() {
         return parseImplication();
@@ -254,8 +232,6 @@ public final class Parser {
         }
     }
 
-    // ------------------------------------------------------------------ 词项
-
     private Ast.Term parseTerm() {
         Token t = peek();
         switch (t.kind) {
@@ -350,8 +326,6 @@ public final class Parser {
         }
         return ty;
     }
-
-    // ------------------------------------------------------------------ 记号流
 
     private static String firstIntervalPart(String raw) {
         int a = raw.indexOf("!t");

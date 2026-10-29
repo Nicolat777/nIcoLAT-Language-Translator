@@ -2,10 +2,6 @@ package nlang;
 
 import java.util.List;
 
-/**
- * 语法树。节点刻意保持扁平（不使用继承层次之外的花哨特性），
- * 便于后续接解析器、类型检查器和多个后端（中文渲染、规范化输出、JSON、字节码）。
- */
 public abstract class Ast {
 
     public abstract static class Node {
@@ -31,7 +27,6 @@ public abstract class Ast {
         }
     }
 
-    /** C := 公式. —— 定义语句，不产生真值 */
     public static final class Def extends Stmt {
         public final String name;
         public final Formula body;
@@ -43,7 +38,6 @@ public abstract class Ast {
         }
     }
 
-    /** 公式. —— 断言 */
     public static final class Assert extends Stmt {
         public final Formula body;
 
@@ -59,7 +53,6 @@ public abstract class Ast {
         }
     }
 
-    /** 二元连接词：∧ ∨ → ↔ */
     public static final class Bin extends Formula {
         public final String op;
         public final Formula left;
@@ -82,7 +75,6 @@ public abstract class Ast {
         }
     }
 
-    /** ∀ / ∃ / ∃! */
     public static final class Quant extends Formula {
         public final String quant;
         public final String var;
@@ -98,7 +90,6 @@ public abstract class Ast {
         }
     }
 
-    /** 谓词调用：词形(角色 词项, ...) */
     public static final class Call extends Formula {
         public final String word;
         public final List<Arg> args;
@@ -122,7 +113,6 @@ public abstract class Ast {
         }
     }
 
-    /** 命题名 C J Q R W X Y 单独作公式 */
     public static final class PropName extends Formula {
         public final String name;
 
@@ -144,7 +134,6 @@ public abstract class Ast {
         }
     }
 
-    /** h(t,F) / hh(i,F) / hl(i,F) / hv(r,F) */
     public static final class TimeScope extends Formula {
         public final String op;
         public final Term arg;
@@ -158,7 +147,6 @@ public abstract class Ast {
         }
     }
 
-    /** 时间关系 hb hk hm ht hn hd */
     public static final class TimeRel extends Formula {
         public final String op;
         public final List<Term> args;
@@ -170,7 +158,6 @@ public abstract class Ast {
         }
     }
 
-    /** 对象/集合关系：a = b、a ∈ S、A ⊆ B、a ≤ b …… */
     public static final class Rel extends Formula {
         public final String op;
         public final Term left;
@@ -190,9 +177,8 @@ public abstract class Ast {
         }
     }
 
-    /** n 词形 / m 词形 */
     public static final class WordTerm extends Term {
-        public final char prefix; // 'n' 或 'm'
+        public final char prefix;
         public final String word;
 
         public WordTerm(char prefix, String word, int pos) {
@@ -211,12 +197,10 @@ public abstract class Ast {
         }
     }
 
-    /** 外部字面量 */
     public static final class LitTerm extends Term {
         public final Token.K kind;
         public final String text;
         public final String value;
-        /** 区间 literal 的两个端点 */
         public final String from;
         public final String to;
 
@@ -234,7 +218,6 @@ public abstract class Ast {
         }
     }
 
-    /** s(x:T, F) —— 部分项 */
     public static final class Iota extends Term {
         public final String var;
         public final NType type;
@@ -248,7 +231,6 @@ public abstract class Ast {
         }
     }
 
-    /** z(S) —— 有限集合的基数 */
     public static final class Card extends Term {
         public final Term set;
 
@@ -258,7 +240,6 @@ public abstract class Ast {
         }
     }
 
-    /** {x:T : F} —— 集合构造 */
     public static final class SetComp extends Term {
         public final String var;
         public final NType type;
@@ -272,7 +253,6 @@ public abstract class Ast {
         }
     }
 
-    /** bb(F) —— 把公式封装为 B 词项 */
     public static final class BoolBox extends Term {
         public final Formula body;
 

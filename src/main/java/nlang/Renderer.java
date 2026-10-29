@@ -5,12 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 中文译写：把 N 语言的语法树读成中文句子。
- *
- * <p>注意这不是「求值」——它只反映结构，不代表这句话为真。
- * 真值需要模型、世界、参照时刻，属于下一阶段的工作。</p>
- */
 public final class Renderer {
 
     private final Lexicon lex;
@@ -19,7 +13,6 @@ public final class Renderer {
         this.lex = lex;
     }
 
-    /** 一句一行，按语句顺序输出中文。 */
     public String gloss(Ast.Program p) {
         StringBuilder sb = new StringBuilder();
         for (Ast.Stmt s : p.stmts) {
@@ -119,7 +112,6 @@ public final class Renderer {
         for (Map.Entry<String, String> en : slot.entrySet()) {
             out = out.replace("{" + en.getKey() + "}", en.getValue());
         }
-        // 可选角色缺省时，模板里剩下的占位符直接去掉
         return out.replaceAll("\\{[a-z]{2}\\}", "");
     }
 
