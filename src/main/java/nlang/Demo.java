@@ -49,7 +49,7 @@ public final class Demo {
         int pass = 0;
         int fail = 0;
 
-        line("N 语言 → 中文   例句");
+        line("nIcoLAT 语言 → 中文   例句");
         int no = 0;
         for (String src : EXAMPLES) {
             no++;

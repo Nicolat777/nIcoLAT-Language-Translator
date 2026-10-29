@@ -174,7 +174,7 @@ public final class SentenceBank {
             sb.append(String.format("%3d. ", p.no)).append(p.zh).append('\n');
             sb.append("     ").append(p.n).append('\n');
         }
-        sb.append("输入其中任意一句（中文或 N 语言）即可互查。");
+        sb.append("输入其中任意一句（中文或 nIcoLAT 语言）即可互查。");
         return sb.toString();
     }
 

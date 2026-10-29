@@ -7,7 +7,7 @@
     <groupId>nlang</groupId>
     <artifactId>nlang-translator</artifactId>
     <version>0.1.0</version>
-    <name>N 语言 V2 翻译器</name>
+    <name>nIcoLAT 语言 V2 翻译器</name>
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>

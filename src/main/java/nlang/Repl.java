@@ -13,13 +13,13 @@ public final class Repl {
     private static String banner() {
         return """
             ==============================================
-                欢迎来到N语言翻译器！
+                欢迎来到nIcoLAT语言翻译器！
             ==============================================
              2004 / tapu       数字 ⇄ 单词
-             那只狗饿了。        中文 → N 语言（例句库）
-             dapi(km m paku).  N 语言 → 中文
+             那只狗饿了。        中文 → nIcoLAT 语言（例句库）
+             dapi(km m paku).  nIcoLAT 语言 → 中文
              测试 / test       查看 %d 组例句对照表
-             翻译 / translate   逐行翻译任意 N 语言句子
+             翻译 / translate   逐行翻译任意 nIcoLAT 语言句子
              帮助 / help       全部指令    退出 / exit  离开
             ----------------------------------------------""".formatted(SentenceBank.all().size());
     }
@@ -201,7 +201,7 @@ public final class Repl {
     }
 
     private static void translateFromConsole(BufferedReader in) throws IOException {
-        System.out.println("请输入 N 语言句子，一行一句，空行结束：");
+        System.out.println("请输入 nIcoLAT 语言句子，一行一句，空行结束：");
         StringBuilder sb = new StringBuilder();
         int count = 0;
         while (true) {
@@ -246,8 +246,8 @@ public final class Repl {
     private static void help() {
         System.out.println("""
                 例句库互查（共 %d 组）：
-                  输入中文句子     → 对应的 N 语言     例：那只狗饿了。
-                  输入 N 语言句子  → 对应的中文       例：dapi(km m paku).
+                  输入中文句子          → 对应的 nIcoLAT 语言  例：那只狗饿了。
+                  输入 nIcoLAT 语言句子 → 对应的中文          例：dapi(km m paku).
 
                 看例句：
                   测试 / test / 例句    打印全部 %d 组对照表
@@ -255,7 +255,7 @@ public final class Repl {
                 查编码：
                   2004 / tapu           数字 ⇄ 单词，查不到输出 null
 
-                翻译任意 N 语言（不限例句库）：
+                翻译任意 nIcoLAT 语言（不限例句库）：
                   翻译 / translate       逐行输入，空行结束
                   翻译 examples/basic.n  翻译整个文件
 

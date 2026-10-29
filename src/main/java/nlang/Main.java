@@ -177,14 +177,14 @@ public final class Main {
 
     private static void usage() {
         System.out.println("""
-                N 语言翻译器
+                nIcoLAT 语言翻译器
 
                 不带参数启动就是交互模式（推荐）：
                   ./run.sh
 
                 也可以直接给参数：
                   nlang test                输出测试内容（例句 + 反例）
-                  nlang trans <file.n>      翻译一个 N 语言文件
+                  nlang trans <file.n>      翻译一个 nIcoLAT 语言文件
                   nlang code  <编码>         编码 → 词形，找不到输出 null
                   nlang word  <词形>         词形 → 编码，找不到输出 null
                 """);

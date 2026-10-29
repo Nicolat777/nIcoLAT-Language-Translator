@@ -1,14 +1,14 @@
 **English** · [中文](README.md)
 
-# N Language (V2) Translator
+# nIcoLAT Language (V2) Translator
 
-A parser, static checker and Chinese renderer for **N Language**, built from the
+A parser, static checker and Chinese renderer for **nIcoLAT Language**, built from the
 language's own rule book (`newLanguage_V2.pdf`).
 
 Pure Java, zero third-party dependencies — `javac` compiles it, `./run.sh` runs it,
 and it ships with an interactive shell.
 
-N Language is a deliberately engineered formal language with six stacked layers:
+nIcoLAT Language is a deliberately engineered formal language with six stacked layers:
 
 ```
 CODE → WORD → OPERATOR → FORM → EXPRESSION → SEMANTICS
@@ -26,8 +26,8 @@ rendering layer that reads a program back as Chinese.
 
 | Feature | What it does |
 |---|---|
-| **Sentence bank** | 75 curated Chinese ⇄ N Language pairs, looked up in both directions |
-| **N Language → Chinese** | Any valid sentence goes through the real parser and gets rendered |
+| **Sentence bank** | 75 curated Chinese ⇄ nIcoLAT Language pairs, looked up in both directions |
+| **nIcoLAT Language → Chinese** | Any valid sentence goes through the real parser and gets rendered |
 | **Codes ⇄ words** | `2004 ⇄ tapu`; malformed input yields `null` |
 | **Static checking** | Lexing, parsing, name resolution, binding, role signatures, types — 10 diagnostic categories with line/column |
 | **Interactive shell** | A menu on startup, no flags to remember |
@@ -40,19 +40,19 @@ Requires **JDK 17+** (developed on OpenJDK 23). No Maven, no network needed.
 
 ```sh
 git clone <your-repo-url>
-cd N语言
+cd nIcoLAT-Language-Translator
 ./run.sh
 ```
 
 ```
 ==============================================
-    欢迎来到N语言翻译器！
+    欢迎来到nIcoLAT语言翻译器！
 ==============================================
  2004 / tapu       数字 ⇄ 单词
- 那只狗饿了。        中文 → N 语言（例句库）
- dapi(km m paku).  N 语言 → 中文
+ 那只狗饿了。        中文 → nIcoLAT 语言（例句库）
+ dapi(km m paku).  nIcoLAT 语言 → 中文
  测试 / test       查看 75 组例句对照表
- 翻译 / translate   逐行翻译任意 N 语言句子
+ 翻译 / translate   逐行翻译任意 nIcoLAT 语言句子
  帮助 / help       全部指令    退出 / exit  离开
 ----------------------------------------------
 > 
@@ -71,11 +71,11 @@ cd N语言
 
 | Input | Result |
 |---|---|
-| `那只狗饿了。` | `dapi(km m paku).` (Chinese → N Language) |
-| `dapi(km m paku).` | `那只狗饿了。` (N Language → Chinese) |
+| `那只狗饿了。` | `dapi(km m paku).` (Chinese → nIcoLAT Language) |
+| `dapi(km m paku).` | `那只狗饿了。` (nIcoLAT Language → Chinese) |
 | `2004` / `tapu` | `tapu` / `2004` |
 | `测试` · `test` · `例句` | print all 75 pairs |
-| `翻译` · `translate` | read N Language line by line, blank line ends input |
+| `翻译` · `translate` | read nIcoLAT Language line by line, blank line ends input |
 | `翻译 examples/basic.n` | translate a whole file |
 | `自检` · `demo` | type-checker demo (25 sentences + 12 rejections) |
 | `帮助` · `help` | command list |
@@ -105,7 +105,7 @@ On failure `trans` prints diagnostics to stderr and exits with code `1`.
 
 ## Sentence bank
 
-75 pairs, every N Language side verified by the checker. Coverage: set relations,
+75 pairs, every nIcoLAT Language side verified by the checker. Coverage: set relations,
 boolean properties, states, actions, space, connectives, quantification, counting,
 iota, measurement, temporal scope, events and causation, information objects.
 
@@ -127,7 +127,7 @@ add(list, "我的中文句子。", "tapa(kp m paka).");
 ## Project layout
 
 ```
-N语言/
+nIcoLAT-Language-Translator/
 ├── run.sh                      one-command compile + run, no Maven
 ├── pom.xml                     Maven metadata (no dependencies)
 ├── newLanguage_V2.pdf          the language specification
@@ -149,7 +149,7 @@ N语言/
     ├── NType.java              types and H<T>
     ├── Lexicon.java            dictionary, name table, code ↔ word conversion
     ├── SentenceBank.java       75 sentence pairs
-    ├── Renderer.java           N Language → Chinese
+    ├── Renderer.java           nIcoLAT Language → Chinese
     ├── Literals.java           rationals, date/time/URL/string validation
     ├── Diagnostic.java         the 10 diagnostic categories
     ├── Demo.java               self-check and example walkthrough
@@ -178,7 +178,7 @@ Roughly 3.2k lines of Java across 15 files.
 - Evaluation: models, worlds, reference time `r`, uniqueness for `s`, finiteness
   for `z`, event time ranges. The spec's `IOTA_EMPTY` / `IOTA_MULTIPLE` /
   `UNDECIDABLE` exist as enum values but nothing produces them yet.
-- Automatic Chinese → N Language translation (only whole-sentence lookup)
+- Automatic Chinese → nIcoLAT Language translation (only whole-sentence lookup)
 - An external dictionary (it is hard-coded in `Lexicon`; the spec asks for
   versioning and migration records)
 
@@ -193,7 +193,7 @@ proposition names (`C J Q R W X Y`) are disjoint. The lexer needs no backtrackin
 and fits in ~60 lines. Diagnostics also have to land in the spec's ten categories,
 which a generated parser's messages would only need wrapping anyway.
 
-**Why the sentence bank matches whole sentences.** Chinese and N Language are not
+**Why the sentence bank matches whole sentences.** Chinese and nIcoLAT Language are not
 isomorphic — one Chinese sentence can map to several valid N programs (word order,
 quantification) and vice versa. Real Chinese → N translation needs a translation
 policy and a template engine; that is out of scope. Better to say "no such
