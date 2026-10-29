@@ -236,10 +236,3 @@ diagnostic.
 
 Also: all 75 pairs compile individually, and `javac -Xlint:all --release 17`
 reports no warnings.
-
----
-
-## License
-
-Not specified yet. If you publish this, consider adding a `LICENSE`
-(MIT or Apache-2.0 are common choices).
