@@ -1,0 +1,47 @@
+∀x:A (
+  (x ∈ n bapa)
+  →
+  (
+    hh(n hape,
+       dapi(km x))
+    →
+    ∃y:A (
+      ((y ∈ n fapo)
+       ∧
+       (hh(n hape,
+           tapu(kp m paka,
+                kt y,
+                kb m piki))
+        ∧
+        (tuku(
+           gz y,
+           gf bb(
+             hl(
+               !h[
+                 !t"2026-10-26T09:00:00+08:00",
+                 !t"2026-10-26T10:00:00+08:00"
+               ],
+               dape(kt x)
+             )
+           )
+         )
+         ∧
+         ∃w:A (
+           ((w ∈ n bapu)
+            ∧
+            (gapa(kn m paka,
+                  kl w)
+             ∧
+             ∃x0:N (
+               (tuki(
+                  gz w,
+                  gg n kapo,
+                  gv x0,
+                  gs n hake)
+                ∧
+                (x0 ≥ 0.9))
+             )))
+         )))
+    )
+  )
+)).

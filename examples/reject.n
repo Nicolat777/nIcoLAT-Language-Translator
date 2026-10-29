@@ -1,0 +1,6 @@
+tapu(kp m paka, kt m puka).
+tapa(kp m paka, kp m piki).
+n bapa ∈ n vapi.
+kapa(kt x).
+h(!d"2026-10-26", ⊤).
+tapo(kp m paka, gh n bapu).

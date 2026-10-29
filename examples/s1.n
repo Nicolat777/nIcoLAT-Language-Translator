@@ -1,0 +1,23 @@
+∃!x:A (
+  ((x ∈ n bapu) ∧
+   (kapa(kt x) ∧
+    gapa(kn m paka, kl x)))
+  ∧
+  ∃y:K (
+    (hh(n hape,
+        tapi(kk y, kt x))
+     ∧
+     (hn(y, n hape)
+      ∧
+      (hd(y, 3, n hapo)
+       ∧
+       ∃w:K (
+         ((y ≠ w)
+          ∧
+          (hh(n hape,
+              tupo(kk w, kt x))
+           ∧
+           gapo(ks y, kz w)))
+       )))
+  )
+)).

@@ -1,0 +1,4 @@
+tapa(kp m paka).
+dape(kt m paku).
+kapa(kt m puka).
+tapu(kp m paka, kt m puka, kb m piki).

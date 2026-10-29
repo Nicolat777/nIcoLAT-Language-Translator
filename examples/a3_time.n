@@ -1,0 +1,13 @@
+∃x:N (
+  (tuki(gz m puka, gg n kapo, gv x, gs n hake) ∧
+    (x ≥ 0.9)) ).
+tuki(gz m pako, gg n kapi, gv 7, gs n haka).
+tuki(gz m puku, gg n kipo, gv 1/8, gs n haki).
+h(n hapa, tapa(kp m paka)).
+hh(n hape, tape(kp m piki)).
+hl(!h[!t"2026-10-26T09:00:00+08:00",
+       !t"2026-10-26T10:00:00+08:00"],
+   dape(kt m paku)).
+∃x:K (
+  (hh(n hape, tapi(kk x, kt m puka)) ∧
+    (hn(x, n hape) ∧ hd(x, 3, n hapo))) ).
